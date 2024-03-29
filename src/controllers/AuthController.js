@@ -29,8 +29,10 @@ const validateMail = async (mail, OTP) => {
             `
         })
         console.log("send mail success", info)
+        return {status: true, message: "send mail success"}
     } catch (error) {
         console.log("error", error)
+        return {status: false, message: "send mail failure"}
     }
 }
   
@@ -61,7 +63,7 @@ const AuthController = {
                 //     validateCode: verifyCode
                 // })
                 // await vadidateCode.save();
-                validateMail(user.mail, verifyCode);
+                const res = validateMail(user.mail, verifyCode);
                 res.json({
                     status: true,
                     message: "Đã thay thế tài khoản có email chưa validate",
