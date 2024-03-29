@@ -12,7 +12,7 @@ require('dotenv').config();
 app.use(morgan('dev'))
 app.use(express.json())
 app.use(express.urlencoded({
-    extended: true
+  extended: true
 }))
 
 //connect DB
