@@ -13,8 +13,8 @@ const validateMail = async (mail, OTP) => {
         let transporter = nodemailer.createTransport({
             service: "Gmail",
             auth: {
-                user: "thunderbrucelee@gmail.com",
-                pass: "bignhayukqmopitx"
+                user: process.env.MAIL_USER,
+                pass: process.env.MAIL_PASS
             }
         })
         let info = await transporter.sendMail({
