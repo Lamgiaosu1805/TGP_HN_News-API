@@ -8,7 +8,7 @@ const generateOTP = () => {
     return randomInt.toString().padStart(6, '0');
 }
 
-const validateMail = async (mail, OTP) => {
+const sendValidateMail = async (mail, OTP) => {
     try {
         let transporter = nodemailer.createTransport({
             service: "Gmail",
@@ -17,7 +17,7 @@ const validateMail = async (mail, OTP) => {
                 pass: process.env.MAIL_PASS
             }
         })
-        let info = await transporter.sendMail({
+        await transporter.sendMail({
             from: "TNTT_VN",
             to: mail,
             subject: "Xác minh tài khoản",
@@ -57,16 +57,23 @@ const AuthController = {
                     sex: body.sex,
                 });
                 const verifyCode = generateOTP();
-                // const vadidateCode = new ValidateCodeEmailModel({
-                //     userId: user._id,
-                //     validateCode: verifyCode
-                // })
-                // await vadidateCode.save();
+                const validateCode = await ValidateCodeEmailModel.findOne({userId: user._id});
+                if(validateCode) {
+                    await ValidateCodeEmailModel.updateOne({userId: user._id}, {validateCode: verifyCode})
+                }
+                else {
+                    const validateCodeNew = new ValidateCodeEmailModel({
+                        userId: user._id,
+                        validateCode: verifyCode
+                    })
+                    await validateCodeNew.save();
+                }
                 res.json({
                     status: true,
                     message: "Đã thay thế tài khoản có email chưa validate",
                 })
-                const responseValidated = await validateMail(user.mail, verifyCode);
+                
+                await sendValidateMail(user.mail, verifyCode);
             }
             else {
                 const user = new UserModel({
@@ -80,11 +87,18 @@ const AuthController = {
                     sex: body.sex,
                     role: 4,
                 })
-                user.save()
+                await user.save();
+                const verifyCode = generateOTP();
+                const validateCodeNew = new ValidateCodeEmailModel({
+                    userId: user._id,
+                    validateCode: verifyCode
+                })
+                await validateCodeNew.save();
                 res.json({
                     status: true,
                     message: "Tạo tài khoản thành công"
                 })
+                await sendValidateMail(user.mail, verifyCode);
             }
         } catch (error) {
             console.log(error)
@@ -94,6 +108,9 @@ const AuthController = {
                 error: error
             })
         }
+    },
+    validateOTP: async (req, res, next) => {
+        
     }
 }
 

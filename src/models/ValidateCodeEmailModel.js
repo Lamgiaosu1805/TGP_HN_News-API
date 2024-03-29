@@ -1,8 +1,9 @@
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema
-const validateCode = new Schema({
+
+const ValidateCode = new Schema({
     userId: {type: String, ref: "user", required: true},
     validateCode: {type: Number, required: true}
 })
 
-module.exports = mongoose.model("tokenValidate", validateCode)
+module.exports = mongoose.model("validateCode", ValidateCode)
