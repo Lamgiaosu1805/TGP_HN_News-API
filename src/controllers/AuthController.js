@@ -3,11 +3,13 @@ const bcrypt = require('bcrypt');
 const ValidateCodeEmailModel = require("../models/ValidateCodeEmailModel");
 const nodemailer = require('nodemailer')
 
+//Sinh OTP
 const generateOTP = () => {
     const randomInt = Math.floor(Math.random() * 1000000);
     return randomInt.toString().padStart(6, '0');
 }
 
+//Gửi OTP qua mail
 const sendValidateMail = async (mail, OTP) => {
     try {
         let transporter = nodemailer.createTransport({
@@ -71,6 +73,10 @@ const AuthController = {
                 res.json({
                     status: true,
                     message: "Đã thay thế tài khoản có email chưa validate",
+                    data: {
+                        userId: user._id,
+                        mail: user.mail
+                    }
                 })
                 
                 await sendValidateMail(user.mail, verifyCode);
@@ -96,7 +102,11 @@ const AuthController = {
                 await validateCodeNew.save();
                 res.json({
                     status: true,
-                    message: "Tạo tài khoản thành công"
+                    message: "Tạo tài khoản thành công",
+                    data: {
+                        userId: user._id,
+                        mail: user.mail
+                    }
                 })
                 await sendValidateMail(user.mail, verifyCode);
             }
@@ -110,7 +120,41 @@ const AuthController = {
         }
     },
     validateOTP: async (req, res, next) => {
-        
+        try {
+            const {body} = req
+            const validateCode = await ValidateCodeEmailModel.findOne({userId: body.userId});
+            if(validateCode) {
+                if(validateCode.validateCode == body.validateCode) {
+                    await UserModel.updateOne({_id: body.userId}, {isValidated: true})
+                    res.json({
+                        status: true,
+                        data: {},
+                        message: "Xác thực mail thành công"
+                    })
+                }else{
+                    res.json({
+                        status: false,
+                        message: "OTP không chính xác"
+                    })
+                }
+            }
+            else {
+                res.json({
+                    status: false,
+                    message: "User không tồn tại"
+                })
+            }
+        } catch (error) {
+            console.log(error)
+            res.json({
+                status: false,
+                message: "Đã có lỗi trong quá trình Xác minh email",
+                error: error
+            })
+        }
+    },
+    resendOTP: (req, res, next) => {
+
     }
 }
 
