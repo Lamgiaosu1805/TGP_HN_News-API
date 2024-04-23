@@ -85,23 +85,29 @@ const PostController = {
         )
     },
     getLinhMuc: async (req, res, next) => {
-        const data = []
+        const data = [];
+        
         const resData = await axios.get('https://www.tonggiaophanhanoi.org/linh-muc-doan-tong-giao-phan-ha-noi-nam-2019/');
         const html = resData.data;
         const $ = cheerio.load(html);
         $('.wp-block-column').each((ind, el) => {
-            if(ind != 1) return
-            $(el).find('p').each((ind, el) => {
+            // if(ind != 2) return
+            const dataItem = []
+            $(el).find('p').each((ind, el) => {  
                 if(ind == 0) return
-                console.log($(el).text())
+                dataItem.push($(el).text())
+            })
+            data.push({
+                item: 1,
+                data: dataItem
             })
         })
-        // res.json(
-        //     ResponseSuccess("Get data thành công", {
-        //         data: data,
-        //         dataNumber: data.length
-        //     })
-        // )
+        res.json(
+            ResponseSuccess("Get data thành công", {
+                data: data,
+                dataNumber: data.length
+            })
+        )
     }
 }
 module.exports = PostController;
