@@ -2,6 +2,7 @@ const { default: axios } = require("axios");
 const cheerio = require('cheerio');
 const { ResponseSuccess } = require("../utils/responseRequest");
 const e = require("express");
+const LinhMucModel = require("../models/LinhMucModel");
 
 const PostController = {
     getNewPost: async (req, res, next) => {
@@ -86,28 +87,48 @@ const PostController = {
     },
     getLinhMuc: async (req, res, next) => {
         const data = [];
+        try {
+            const resData = await axios.get('https://www.tonggiaophanhanoi.org/linh-muc-doan-tong-giao-phan-ha-noi-nam-2019/');
+            const html = resData.data;
+            const $ = cheerio.load(html);
+            $('.elementor-element-06918b4').each((ind, el) => {
+                $(el).find('.wp-block-column').each(async(ind, el) => {
+                    const dataItem = []
+                    $(el).find('p').each((ind, el) => {  
+                        if($(el).text().includes("<img")){
+                            $(el).find('strong').each((ind, el) => {
+                                dataItem.push($(el).text())
+                            })
+                        }
+                        else{
+                            dataItem.push($(el).text())
+                        }
+                    })
+                    const img = $(el).find('img').attr('data-src');
+                    // const linhMuc = new LinhMucModel({
+                    //     info: dataItem,
+                    //     imgUrl: img
+                    // })
+                    // linhMuc.save()
+                    data.push({
+                        idLinhMuc: ind,
+                        data: {
+                            imgUrl: img,
+                            detail: dataItem
+                        },
+                    })
+                })
+            })
+            res.json(
+                ResponseSuccess("Get data thành công", {
+                    dataNumber: data.length,
+                    listLinhMuc: data,
+                })
+            )
+        } catch (error) {
+            
+        }
         
-        const resData = await axios.get('https://www.tonggiaophanhanoi.org/linh-muc-doan-tong-giao-phan-ha-noi-nam-2019/');
-        const html = resData.data;
-        const $ = cheerio.load(html);
-        $('.wp-block-column').each((ind, el) => {
-            // if(ind != 2) return
-            const dataItem = []
-            $(el).find('p').each((ind, el) => {  
-                if(ind == 0) return
-                dataItem.push($(el).text())
-            })
-            data.push({
-                item: 1,
-                data: dataItem
-            })
-        })
-        res.json(
-            ResponseSuccess("Get data thành công", {
-                data: data,
-                dataNumber: data.length
-            })
-        )
     }
 }
 module.exports = PostController;
