@@ -106,10 +106,13 @@ const PostController = {
                     })
                     const img = $(el).find('img').attr('data-src');
                     // const linhMuc = new LinhMucModel({
+                    //     type: 0,//0 LM đoàn, 1 LM Dòng, 2 LM nghỉ dưỡng, 3 LM đã mất
+                    //     id: ind,
                     //     info: dataItem,
-                    //     imgUrl: img
+                    //     imgUrl: img,
                     // })
                     // linhMuc.save()
+                    // console.log(dataItem)
                     data.push({
                         idLinhMuc: ind,
                         data: {
