@@ -1,7 +1,6 @@
 const { default: axios } = require("axios");
 const cheerio = require('cheerio');
 const { ResponseSuccess } = require("../utils/responseRequest");
-const e = require("express");
 const LinhMucModel = require("../models/LinhMucModel");
 
 const PostController = {
@@ -40,50 +39,59 @@ const PostController = {
 
     getNewPostReceived: async (req, res, next) => {
         const data = []
-        const resData = await axios.get('https://www.tonggiaophanhanoi.org/');
-        const html = resData.data;
-        const $ = cheerio.load(html);
-        $('.elementor-element-a6c2c43').each((ind, el) => {
-            $(el).find('.elementor-post').each((ind, el) => {
-                const title = $(el).find('h4').text().trim();
-                const link = $(el).find('.elementor-post__thumbnail__link').attr('href');
-                const imgUrl = $(el).find('img').attr('data-src');
-                // const time = $(el).find('.elementor-post__meta-data').text();
-                data.push({
-                    title, link, imgUrl
+        try {
+            const resData = await axios.get('https://www.tonggiaophanhanoi.org/');
+            const html = resData.data;
+            const $ = cheerio.load(html);
+            $('.elementor-element-a6c2c43').each((ind, el) => {
+                $(el).find('.elementor-post').each((ind, el) => {
+                    const title = $(el).find('h4').text().trim();
+                    const link = $(el).find('.elementor-post__thumbnail__link').attr('href');
+                    const imgUrl = $(el).find('img').attr('data-src');
+                    // const time = $(el).find('.elementor-post__meta-data').text();
+                    data.push({
+                        title, link, imgUrl
+                    })
                 })
             })
-        })
-        res.json(
-            ResponseSuccess("Get data thành công", {
-                data: data,
-                dataNumber: data.length
-            })
-        )
+            res.json(
+                ResponseSuccess("Get data thành công", {
+                    data: data,
+                    dataNumber: data.length
+                })
+            )
+        } catch (error) {
+            
+        }
+       
     },
 
     getLoiChuaMoiNgay: async (req, res, next) => {
         const data = []
-        const resData = await axios.get('https://www.tonggiaophanhanoi.org/');
-        const html = resData.data;
-        const $ = cheerio.load(html);
-        $('.elementor-element-3d1fedf').each((ind, el) => {
-            $(el).find('.elementor-post').each((ind, el) => {
-                const title = $(el).find('h4').text().trim();
-                const link = $(el).find('.elementor-post__thumbnail__link').attr('href');
-                const imgUrl = $(el).find('img').attr('data-src');
-                const metaData = $(el).find('.elementor-post__excerpt').text().trim()
-                data.push({
-                    title, link, imgUrl, metaData
+        try {
+            const resData = await axios.get('https://www.tonggiaophanhanoi.org/');
+            const html = resData.data;
+            const $ = cheerio.load(html);
+            $('.elementor-element-3d1fedf').each((ind, el) => {
+                $(el).find('.elementor-post').each((ind, el) => {
+                    const title = $(el).find('h4').text().trim();
+                    const link = $(el).find('.elementor-post__thumbnail__link').attr('href');
+                    const imgUrl = $(el).find('img').attr('data-src');
+                    const metaData = $(el).find('.elementor-post__excerpt').text().trim()
+                    data.push({
+                        title, link, imgUrl, metaData
+                    })
                 })
             })
-        })
-        res.json(
-            ResponseSuccess("Get data thành công", {
-                data: data,
-                dataNumber: data.length
-            })
-        )
+            res.json(
+                ResponseSuccess("Get data thành công", {
+                    data: data,
+                    dataNumber: data.length
+                })
+            )
+        } catch (error) {
+            
+        }
     },
     getLinhMuc: async (req, res, next) => {
         const data = [];
