@@ -14,9 +14,9 @@ const PostController = {
             $('.elementor-element-f32ff4c').each((ind, el) => {
                 $(el).find('.elementor-post').each((ind, el) => {
                     const title = $(el).find('h3').text().trim();
-                    const link = $(el).find('.elementor-post__thumbnail__link').attr('href');
-                    const imgUrl = $(el).find('img').attr('data-src');
-                    const time = $(el).find('.elementor-post__meta-data').text();
+                    const link = $(el).find('.elementor-post__thumbnail__link').attr('href').trim();
+                    const imgUrl = $(el).find('img').attr('data-src').trim();
+                    const time = $(el).find('.elementor-post__meta-data').text().trim();
                     data.push({
                         title, link, imgUrl, time
                     })
