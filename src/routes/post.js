@@ -5,6 +5,6 @@ const router = express.Router()
 router.get('/newPost', PostController.getNewPost);
 router.get('/newPostReceived', PostController.getNewPostReceived);
 router.get('/loiChuaMoiNgay', PostController.getLoiChuaMoiNgay);
-router.get('/linhMucDoan', PostController.getLinhMuc);
+// router.get('/linhMucDoan', PostController.getLinhMuc);
 
 module.exports = router;
