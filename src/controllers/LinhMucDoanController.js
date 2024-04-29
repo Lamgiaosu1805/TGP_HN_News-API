@@ -13,6 +13,25 @@ const LinhMucDoanController = {
             console.log(error)
         }
     },
+    getLinhMucPerPage: async (req, res, next) => {
+        try {
+            const page = parseInt(req.params.page);
+            const listLMPerPage = await LinhMucModel.find().skip((page-1)*20).limit(20)
+            if(listLMPerPage) {
+                res.json(ResponseSuccess("Get data thành công", {
+                    page: page,
+                    length: listLMPerPage.length,
+                    data: listLMPerPage,
+                }))
+            }
+            else {
+                console.log("LỖIIII")
+            }
+        } catch (error) {
+            console.log(error)
+        }
+        
+    },
     updateLinhMucInfo: async (req, res, next) => {
         try {
             const listLinhMuc = await LinhMucModel.find();
