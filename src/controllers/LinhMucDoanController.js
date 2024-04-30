@@ -16,7 +16,7 @@ const LinhMucDoanController = {
     getLinhMucPerPage: async (req, res, next) => {
         try {
             const page = parseInt(req.params.page);
-            const listLMPerPage = await LinhMucModel.find().skip((page-1)*20).limit(20)
+            const listLMPerPage = await LinhMucModel.find().skip((page-1)*15).limit(15)
             if(listLMPerPage) {
                 res.json(ResponseSuccess("Get data thành công", {
                     page: page,
