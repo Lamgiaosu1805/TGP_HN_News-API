@@ -57,7 +57,7 @@ const LinhMucDoanController = {
                     break;
             }
         } catch (error) {
-            
+            console.log(error)
         }
     },
 
