@@ -1,5 +1,5 @@
 const LinhMucModel = require("../models/LinhMucModel");
-const { ResponseSuccess } = require("../utils/responseRequest");
+const { ResponseSuccess, ResponseFailure } = require("../utils/responseRequest");
 
 const LinhMucDoanController = {
     getLinhMuc: async (req, res, next) => {
@@ -30,8 +30,37 @@ const LinhMucDoanController = {
         } catch (error) {
             console.log(error)
         }
-        
     },
+
+    searchLinhMuc: async (req, res, next) => {
+        const {searchValue, type} = req.body
+        var listLinhMuc
+        try {
+            switch (type) {
+                case 1: // Search theo tên
+                    listLinhMuc = await LinhMucModel.find({
+                        fullname: {$regex:searchValue, $options: "i"}
+                    })
+                    res.json(ResponseSuccess("Get data thành công", listLinhMuc))
+                    break
+                    
+                case 2: // Search theo năm truyền chức
+                    listLinhMuc = await LinhMucModel.find({
+                        thuPhongLinhMuc: {$regex:searchValue, $options: "i"}
+                    })
+                    res.json(ResponseSuccess("Get data thành công", listLinhMuc))
+                    break
+                    
+            
+                default:
+                    res.json(ResponseFailure("E001", "Lỗi", "Lỗi"))
+                    break;
+            }
+        } catch (error) {
+            
+        }
+    },
+
     updateLinhMucInfo: async (req, res, next) => {
         try {
             const listLinhMuc = await LinhMucModel.find();

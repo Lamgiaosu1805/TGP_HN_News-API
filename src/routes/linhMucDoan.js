@@ -6,4 +6,6 @@ router.get('/', LinhMucDoanController.getLinhMuc);
 // router.get('/updateAllInfo', LinhMucDoanController.updateLinhMucInfo);
 router.get('/:page', LinhMucDoanController.getLinhMucPerPage);
 
+router.post('/search', LinhMucDoanController.searchLinhMuc);
+
 module.exports = router;
