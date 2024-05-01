@@ -33,31 +33,18 @@ const LinhMucDoanController = {
     },
 
     searchLinhMuc: async (req, res, next) => {
-        const {searchValue, type} = req.body
-        var listLinhMuc
+        const {searchValue, type, page} = req.body
         try {
-            switch (type) {
-                case 1: // Search theo tên
-                    listLinhMuc = await LinhMucModel.find({
-                        fullname: {$regex:searchValue, $options: "i"}
-                    })
-                    res.json(ResponseSuccess("Get data thành công", listLinhMuc))
-                    break
-                    
-                case 2: // Search theo năm truyền chức
-                    listLinhMuc = await LinhMucModel.find({
-                        thuPhongLinhMuc: {$regex:searchValue, $options: "i"}
-                    })
-                    res.json(ResponseSuccess("Get data thành công", listLinhMuc))
-                    break
-                    
-            
-                default:
-                    res.json(ResponseFailure("E001", "Lỗi", "Lỗi"))
-                    break;
-            }
+            const listLinhMuc = await LinhMucModel.find({
+                info: {$regex:searchValue, $options: "i"}
+            }).skip((page - 1) * 15).limit(15)
+            res.json(ResponseSuccess("Get data thành công", {
+                page: page,
+                length: listLinhMuc.length,
+                data: listLinhMuc,
+            }))
         } catch (error) {
-            console.log(error)
+            console.log(error);
         }
     },
 
