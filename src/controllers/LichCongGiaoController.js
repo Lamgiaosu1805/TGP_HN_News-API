@@ -1,6 +1,7 @@
 const { default: axios } = require('axios');
 const cheerio = require('cheerio');
 const { ResponseSuccess } = require('../utils/responseRequest');
+const { default: Expo } = require('expo-server-sdk');
 const LichCongGiaoController = {
     getLich: async (req, res, next) => {
         const data = [];
@@ -28,6 +29,49 @@ const LichCongGiaoController = {
             
         } catch (error) {
             
+        }
+    },
+    pushNotification: async (req, res, next) => {
+        const expo = new Expo({accessToken: process.env.EXPO_ACCESSTOKEN})
+        const message = {
+            to: "ExponentPushToken[zXWyPYDyEgfMnVPmS1vVHc]", // Replace with a valid push token from your app
+            title: 'My Notification Title',
+            body: 'This is the notification body content',
+            data: { someData: 'Some data to be sent with the notification' }, // Optional data
+        };
+        const message2 = {
+            to: "ExponentPushToken[zXWyPYDyEgfMnVPmS1vVHc]", // Replace with a valid push token from your app
+            title: 'My Notification Titleeeeee',
+            body: 'This is the notification body content',
+            data: { someData: 'Some data to be sent with the notification' }, // Optional data
+        };
+        (async () => {
+        try {
+            const { tickets, errors } = await expo.sendPushNotificationsAsync([message, message2]);
+                handlePushTicketResponses(tickets);
+                handleErrorResponses(errors);
+            } catch (error) {
+                console.error('Error sending notifications:', error);
+            }
+        })();
+        res.send("a")
+        
+        function handlePushTicketResponses(tickets) {
+        // Process tickets for successful and failed deliveries
+            for (const ticket of tickets) {
+                const { status, error } = ticket;
+                console.log(`Ticket ${ticket.id}: ${status}`);
+                if (error) {
+                console.error(`Error (${error.code}): ${error.message}`);
+                }
+            }
+        }
+        
+        function handleErrorResponses(errors) {
+            // Handle errors related to the Expo push notification service
+            for (const error of errors) {
+                console.error(`Expo server error: ${error}`);
+            }
         }
     }
 }
