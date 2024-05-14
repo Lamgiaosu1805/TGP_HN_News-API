@@ -15,6 +15,15 @@ const GiaoHatController = {
         } catch (error) {
             console.log(error)
         }
+    },
+
+    getListGiaoHat: async (req, res, next) => {
+        try {
+            const listGiaoHat = await GiaoHatModel.find()
+            res.json(listGiaoHat)
+        } catch (error) {
+            console.log(error)
+        }
     }
 }
 module.exports = GiaoHatController
